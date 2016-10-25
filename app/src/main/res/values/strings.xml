@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">Popular Movies</string>
+    //General
+    <string name="app_name" translatable="false">Popular Movies</string>
+
+    //Titles
+    <string name="title_browser_movies">Popular Movies</string>
+    <string name="title_movie_details">Movie Details</string>
+
+    //Common
+    <string name="message_offline">This is content is not available offline!</string>
+
+    //Browser Movies
+    <string name="menu_sort_popularity">Most popular</string>
+    <string name="menu_sort_vote_count">Most rated</string>
+
+    //Movie Details
+
 </resources>
