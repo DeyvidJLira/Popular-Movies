@@ -8,10 +8,12 @@
 
     //Common
     <string name="message_offline">This is content is not available offline!</string>
+    <string name="loading">Loading...</string>
 
     //Browser Movies
+    <string name="menu_sort_by">Sort by</string>
     <string name="menu_sort_popularity">Most popular</string>
-    <string name="menu_sort_vote_count">Most rated</string>
+    <string name="menu_sort_vote_average">Highest rated</string>
 
     //Movie Details
 
