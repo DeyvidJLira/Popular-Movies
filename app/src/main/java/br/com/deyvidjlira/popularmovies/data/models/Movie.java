@@ -1,21 +1,29 @@
 package br.com.deyvidjlira.popularmovies.data.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import br.com.deyvidjlira.popularmovies.util.Constants;
 
 /**
  * Created by Deyvid on 25/10/2016.
  */
-public class Movie {
+public class Movie implements Parcelable {
     private int id;
     private String title;
     private String original_title;
     private String poster_path;
     private String release_date;
     private String overview;
-    private double popularity;
-    private double voteAverage;
+    private float popularity;
+    private float vote_average;
 
-    public Movie(int id, String title, String original_title, String poster_path, String release_date, String overview, double popularity, double voteAverage) {
+    public Movie(int id, String title, String original_title, String poster_path, String release_date, String overview, float popularity, float vote_average) {
         this.id = id;
         this.title = title;
         this.original_title = original_title;
@@ -23,7 +31,7 @@ public class Movie {
         this.release_date = release_date;
         this.overview = overview;
         this.popularity = popularity;
-        this.voteAverage = voteAverage;
+        this.vote_average = vote_average;
     }
 
     public int getId() {
@@ -78,19 +86,75 @@ public class Movie {
         return popularity;
     }
 
-    public void setPopularity(double popularity) {
+    public void setPopularity(float popularity) {
         this.popularity = popularity;
     }
 
-    public double getVoteAverage() {
-        return voteAverage;
+    public String getVote_average() {
+        DecimalFormat format = new DecimalFormat("#.##");
+        return format.format(vote_average);
     }
 
-    public void setVoteAverage(double voteAverage) {
-        this.voteAverage = voteAverage;
+    public void setVote_average(float vote_average) {
+        this.vote_average = vote_average;
     }
 
-    public String getImageURL() {
-        return Constants.IMAGE_BASE_URL + Constants.IMAGE_SMALL_SIZE + getPosterPath();
+    public String getImageURL(String size) {
+        return Constants.IMAGE_BASE_URL + size + getPosterPath();
     }
+
+
+    public String getRating() {
+        return ""+ getVote_average() + "/" + 10;
+    }
+
+    public String getMovieReleaseYear() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy");
+        String year = "";
+        try {
+            Date newDate = format.parse(getReleaseDate());
+            year = format.format(newDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return year;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public Movie(Parcel in) {
+        id = in.readInt();
+        poster_path = in.readString();
+        overview = in.readString();
+        release_date = in.readString();
+        original_title = in.readString();
+        popularity = in.readFloat();
+        vote_average = in.readFloat();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(poster_path);
+        dest.writeString(overview);
+        dest.writeString(release_date);
+        dest.writeString(original_title);
+        dest.writeFloat(popularity);
+        dest.writeFloat(vote_average);
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR
+            = new Parcelable.Creator<Movie>() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }
