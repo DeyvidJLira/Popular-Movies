@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="grid_item_movie_width">150dp</dimen>
     <dimen name="detail_text_size">16sp</dimen>
+    <dimen name="detail_title_text_size">40sp</dimen>
+    <dimen name="detail_title_text_padding">30dp</dimen>
 </resources>

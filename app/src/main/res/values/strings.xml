@@ -14,7 +14,9 @@
     <string name="menu_sort_by">Sort by</string>
     <string name="menu_sort_popularity">Most popular</string>
     <string name="menu_sort_vote_average">Highest rated</string>
+    <string name="action_settings">Settings</string>
 
     //Movie Details
+    <string name="buttton_mark_favorite">MARK AS FAVORITE</string>
 
 </resources>

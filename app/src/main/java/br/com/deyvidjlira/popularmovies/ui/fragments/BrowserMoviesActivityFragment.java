@@ -2,6 +2,7 @@ package br.com.deyvidjlira.popularmovies.ui.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import br.com.deyvidjlira.popularmovies.data.models.Movie;
 import br.com.deyvidjlira.popularmovies.data.models.ResponseAPI;
 import br.com.deyvidjlira.popularmovies.data.services.IMovieService;
 import br.com.deyvidjlira.popularmovies.data.services.MovieClient;
+import br.com.deyvidjlira.popularmovies.ui.activities.DetailMovieActivity;
 import br.com.deyvidjlira.popularmovies.ui.adapters.MovieAdapter;
 import br.com.deyvidjlira.popularmovies.util.Constants;
 import retrofit2.Call;
@@ -65,18 +67,20 @@ public class BrowserMoviesActivityFragment extends Fragment {
         gridViewMovie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), m_Movies.get(position).getOriginalTitle(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), DetailMovieActivity.class).putExtra("MOVIE", m_Movies.get(position));
+                startActivity(intent);
             }
         });
 
         if(isOnline()) {
-            m_ProgressDialog.show();
+           m_ProgressDialog.show();
 
             fetchMovies(m_SortType);
         }
 
         return rootView;
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
