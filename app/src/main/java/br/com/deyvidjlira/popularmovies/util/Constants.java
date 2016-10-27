@@ -10,5 +10,6 @@ public final class Constants {
     public final static String SORT_POPULAR_PARAM = "popular";
     public final static String SORT_RATE_PARAM = "top_rated";
     public final static String IMAGE_BASE_URL= "https://image.tmdb.org/t/p/";
+    public final static String IMAGE_MINI_SIZE = "w154";
     public final static String IMAGE_SMALL_SIZE = "w185";
 }

@@ -13,6 +13,7 @@ import java.util.List;
 
 import br.com.deyvidjlira.popularmovies.R;
 import br.com.deyvidjlira.popularmovies.data.models.Movie;
+import br.com.deyvidjlira.popularmovies.util.Constants;
 
 /**
  * Created by Deyvid on 25/10/2016.
@@ -30,7 +31,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         }
 
         ImageView moviePoster = (ImageView) convertView.findViewById(R.id.movie_poster);
-        Picasso.with(getContext()).load(movie.getImageURL()).into(moviePoster);
+        Picasso.with(getContext()).load(movie.getImageURL(Constants.IMAGE_SMALL_SIZE)).into(moviePoster);
 
         return convertView;
     }
