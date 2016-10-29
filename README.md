@@ -20,3 +20,7 @@ https://github.com/hkasera/Popular-Movies-App
 https://github.com/DmitryMalkovich/popular-movies-app
 
 https://github.com/ewintory/udacity-popular-movies
+
+http://www.devmedia.com.br/trabalhando-com-asynctask-no-android/33481
+
+http://blog.robinchutaux.com/blog/a-smart-way-to-use-retrofit/
