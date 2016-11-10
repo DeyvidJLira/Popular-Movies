@@ -23,6 +23,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         super(context, 0, movies);
     }
 
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Movie movie = getItem(position);
 
