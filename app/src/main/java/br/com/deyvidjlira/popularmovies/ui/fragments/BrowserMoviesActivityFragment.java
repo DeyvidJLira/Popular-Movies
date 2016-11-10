@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,46 +39,32 @@ import retrofit2.Response;
 public class BrowserMoviesActivityFragment extends Fragment {
 
     private MovieAdapter m_MovieAdapter;
-    private List<Movie> m_Movies;
+    private List<Movie> m_Movies = new ArrayList<>();
     private ProgressDialog m_ProgressDialog;
     private String m_SortType = Constants.SORT_POPULAR_PARAM;
     private MenuItem m_MenuItemSortPopular;
     private MenuItem m_MenuItemSortRating;
+    private GridView m_GridViewMovies;
 
-    public BrowserMoviesActivityFragment() {
-        setHasOptionsMenu(true);
-    }
+    public BrowserMoviesActivityFragment() { setHasOptionsMenu(true); }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_browser_movies, container, false);
-
-        m_Movies = new ArrayList<>();
-        m_MovieAdapter = new MovieAdapter(getActivity(), m_Movies);
-
-        GridView gridViewMovie = (GridView) rootView.findViewById(R.id.gridViewMovie);
-        gridViewMovie.setAdapter(m_MovieAdapter);
-
-        gridViewMovie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), DetailMovieActivity.class).putExtra("MOVIE", m_Movies.get(position));
-                startActivity(intent);
-            }
-        });
-
-        return rootView;
+        return inflater.inflate(R.layout.fragment_browser_movies, container, false);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (view != null) {
+            m_GridViewMovies = (GridView) view.findViewById(R.id.gridViewMovie);
+        }
+        updateGridViewMovies();
         if(isOnline()) {
-            new FetchMoviesTask().execute(Constants.SORT_POPULAR_PARAM);
+            new FetchMoviesTask().execute(m_SortType);
         }
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -126,7 +113,9 @@ public class BrowserMoviesActivityFragment extends Fragment {
 
     private void changeSort(String sort) {
         m_SortType = sort;
-        new FetchMoviesTask().execute(m_SortType);
+        if(isOnline()) {
+            new FetchMoviesTask().execute(m_SortType);
+        }
     }
 
     public boolean isOnline() {
@@ -137,6 +126,19 @@ public class BrowserMoviesActivityFragment extends Fragment {
             return false;
         }
         return true;
+    }
+
+    private void updateGridViewMovies() {
+        m_MovieAdapter = new MovieAdapter(getActivity(), m_Movies);
+        m_GridViewMovies.setAdapter(m_MovieAdapter);
+        m_GridViewMovies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), DetailMovieActivity.class).putExtra("MOVIE", m_Movies.get(position));
+                startActivity(intent);
+            }
+        });
+
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, List<Movie>> {
@@ -166,11 +168,13 @@ public class BrowserMoviesActivityFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Movie> result) {
-            m_MovieAdapter.clear();
+            m_Movies = result;
             if(result != null) {
-                for(Movie movie : result) {
+                m_MovieAdapter.clear();
+                for (Movie movie : result) {
                     m_MovieAdapter.add(movie);
                 }
+                m_MovieAdapter.notifyDataSetChanged();
             }
             m_ProgressDialog.dismiss();
         }
