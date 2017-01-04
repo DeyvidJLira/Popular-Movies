@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -18,21 +18,49 @@ import br.com.deyvidjlira.popularmovies.util.Constants;
 /**
  * Created by Deyvid on 25/10/2016.
  */
-public class MovieAdapter extends ArrayAdapter<Movie> {
+public class MovieAdapter extends BaseAdapter {
+
+    private Context m_Context;
+    private List<Movie> m_Movies;
+
     public MovieAdapter(Context context, List<Movie> movies) {
-        super(context, 0, movies);
+        m_Context = context;
+        m_Movies = movies;
+    }
+
+    public void addMovie(Movie movie) {
+        m_Movies.add(movie);
+    }
+
+    public void clear() {
+        m_Movies.clear();
+    }
+
+    @Override
+    public int getCount() {
+        return m_Movies.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return m_Movies.get(i);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Movie movie = getItem(position);
+        Movie movie = (Movie) getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.movie_grid_item, parent, false);
+            convertView = LayoutInflater.from(m_Context).inflate(R.layout.movie_grid_item, parent, false);
         }
 
         ImageView moviePoster = (ImageView) convertView.findViewById(R.id.movie_poster);
-        Picasso.with(getContext()).load(movie.getImageURL(Constants.IMAGE_SMALL_SIZE)).into(moviePoster);
+        Picasso.with(m_Context).load(movie.getImageURL(Constants.IMAGE_SMALL_SIZE)).into(moviePoster);
 
         return convertView;
     }

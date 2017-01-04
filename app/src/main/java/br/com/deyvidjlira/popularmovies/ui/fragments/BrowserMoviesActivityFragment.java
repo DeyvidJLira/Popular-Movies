@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +30,7 @@ import br.com.deyvidjlira.popularmovies.data.services.IMovieService;
 import br.com.deyvidjlira.popularmovies.data.services.MovieClient;
 import br.com.deyvidjlira.popularmovies.ui.activities.DetailMovieActivity;
 import br.com.deyvidjlira.popularmovies.ui.adapters.MovieAdapter;
+import br.com.deyvidjlira.popularmovies.util.AsyncDelegate;
 import br.com.deyvidjlira.popularmovies.util.Constants;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -36,7 +38,7 @@ import retrofit2.Response;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class BrowserMoviesActivityFragment extends Fragment {
+public class BrowserMoviesActivityFragment extends Fragment implements AsyncDelegate {
 
     private MovieAdapter m_MovieAdapter;
     private List<Movie> m_Movies = new ArrayList<>();
@@ -45,6 +47,7 @@ public class BrowserMoviesActivityFragment extends Fragment {
     private MenuItem m_MenuItemSortPopular;
     private MenuItem m_MenuItemSortRating;
     private GridView m_GridViewMovies;
+    private boolean m_IsFirstTime = true;
 
     public BrowserMoviesActivityFragment() { setHasOptionsMenu(true); }
 
@@ -60,10 +63,19 @@ public class BrowserMoviesActivityFragment extends Fragment {
         if (view != null) {
             m_GridViewMovies = (GridView) view.findViewById(R.id.gridViewMovie);
         }
+
+        m_MovieAdapter = new MovieAdapter(getActivity(), m_Movies);
+
         updateGridViewMovies();
+
         if(isOnline()) {
-            new FetchMoviesTask().execute(m_SortType);
+            new FetchMoviesTask(this).execute(m_SortType);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -111,10 +123,17 @@ public class BrowserMoviesActivityFragment extends Fragment {
         }
     }
 
+    public void asyncComplete(boolean success) {
+        if(m_IsFirstTime) {
+            new FetchMoviesTask(this).execute(m_SortType);
+            m_IsFirstTime = false;
+        }
+    }
+
     private void changeSort(String sort) {
         m_SortType = sort;
         if(isOnline()) {
-            new FetchMoviesTask().execute(m_SortType);
+            new FetchMoviesTask(this).execute(m_SortType);
         }
     }
 
@@ -129,7 +148,6 @@ public class BrowserMoviesActivityFragment extends Fragment {
     }
 
     private void updateGridViewMovies() {
-        m_MovieAdapter = new MovieAdapter(getActivity(), m_Movies);
         m_GridViewMovies.setAdapter(m_MovieAdapter);
         m_GridViewMovies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -138,13 +156,18 @@ public class BrowserMoviesActivityFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, List<Movie>> {
 
+        private AsyncDelegate m_Delegate;
+
         IMovieService m_MovieService;
         List<Movie> movieList = null;
+
+        public FetchMoviesTask(AsyncDelegate delegate) {
+            this.m_Delegate = delegate;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -161,7 +184,7 @@ public class BrowserMoviesActivityFragment extends Fragment {
                 Response<ResponseAPI<Movie>> response = moviesCall.execute();
                 movieList = response.body().getResults();
             } catch (Exception e) {
-                Toast.makeText(getContext(), getString(R.string.message_offline), Toast.LENGTH_SHORT).show();
+                Log.e("FetchMovieTask", "Error service!");
             }
             return movieList;
         }
@@ -172,11 +195,13 @@ public class BrowserMoviesActivityFragment extends Fragment {
             if(result != null) {
                 m_MovieAdapter.clear();
                 for (Movie movie : result) {
-                    m_MovieAdapter.add(movie);
+                    m_MovieAdapter.addMovie(movie);
+                    m_MovieAdapter.notifyDataSetChanged();
                 }
-                m_MovieAdapter.notifyDataSetChanged();
             }
             m_ProgressDialog.dismiss();
+            m_Delegate.asyncComplete(true);
         }
+
     }
 }
