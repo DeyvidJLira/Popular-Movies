@@ -13,6 +13,7 @@ import java.util.List;
 
 import br.com.deyvidjlira.popularmovies.R;
 import br.com.deyvidjlira.popularmovies.data.models.Movie;
+import br.com.deyvidjlira.popularmovies.ui.viewholders.MovieViewHolder;
 import br.com.deyvidjlira.popularmovies.util.Constants;
 
 /**
@@ -53,13 +54,22 @@ public class MovieAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+        MovieViewHolder viewHolder;
         Movie movie = (Movie) getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(m_Context).inflate(R.layout.movie_grid_item, parent, false);
+
+            viewHolder = new MovieViewHolder();
+            viewHolder.m_MoviePoster = (ImageView) convertView.findViewById(R.id.movie_poster);
+
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (MovieViewHolder) convertView.getTag();
         }
 
-        ImageView moviePoster = (ImageView) convertView.findViewById(R.id.movie_poster);
+        ImageView moviePoster = viewHolder.m_MoviePoster;
         Picasso.with(m_Context).load(movie.getImageURL(Constants.IMAGE_SMALL_SIZE)).into(moviePoster);
 
         return convertView;
