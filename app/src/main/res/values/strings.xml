@@ -9,6 +9,7 @@
     //Common
     <string name="message_offline">This is content is not available offline!</string>
     <string name="loading">Loading...</string>
+    <string name="message_searching_movies">Searching movies...</string>
 
     //Browser Movies
     <string name="menu_sort_by">Sort by</string>
@@ -18,5 +19,8 @@
 
     //Movie Details
     <string name="buttton_mark_favorite">MARK AS FAVORITE</string>
+
+    //Errors
+    <string name="connection_error">Connection failed!</string>
 
 </resources>
