@@ -23,6 +23,8 @@ import java.util.List;
 
 import br.com.deyvidjlira.popularmovies.R;
 import br.com.deyvidjlira.popularmovies.data.models.Movie;
+import br.com.deyvidjlira.popularmovies.data.preferences.PopularMoviesPreference;
+import br.com.deyvidjlira.popularmovies.data.preferences.PreferenceParameters;
 import br.com.deyvidjlira.popularmovies.data.services.MovieService;
 import br.com.deyvidjlira.popularmovies.ui.activities.DetailMovieActivity;
 import br.com.deyvidjlira.popularmovies.ui.adapters.MovieAdapter;
@@ -37,7 +39,7 @@ public class BrowserMoviesActivityFragment extends Fragment implements AsyncDele
     private MovieAdapter m_MovieAdapter;
     private List<Movie> m_Movies = new ArrayList<>();
     private ProgressDialog m_ProgressDialog;
-    private String m_SortType = Constants.SORT_POPULAR_PARAM;
+    private String m_SortType;
     private MenuItem m_MenuItemSortPopular;
     private MenuItem m_MenuItemSortRating;
     private GridView m_GridViewMovies;
@@ -49,13 +51,14 @@ public class BrowserMoviesActivityFragment extends Fragment implements AsyncDele
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_browser_movies, container, false);
     }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (view != null) {
             m_GridViewMovies = (GridView) view.findViewById(R.id.gridViewMovie);
         }
+
+        m_SortType = PopularMoviesPreference.getInstance(getContext()).getString(PreferenceParameters.m_KEY_SORT, Constants.SORT_POPULAR_PARAM);
 
         if(isOnline()) {
             new MovieService(this).execute(m_SortType);
@@ -129,6 +132,7 @@ public class BrowserMoviesActivityFragment extends Fragment implements AsyncDele
 
     private void changeSort(String sort) {
         m_SortType = sort;
+        PopularMoviesPreference.getInstance(getContext()).putString(PreferenceParameters.m_KEY_SORT, m_SortType);
         if(isOnline()) {
             new MovieService(this).execute(m_SortType);
         }
