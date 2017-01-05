@@ -5,6 +5,12 @@ Popular Movies App developed in the course Android Developer Nanodegree of the U
 In build.gradle(Module: app) replace the text YOUR_API_KEY_HERE by your api key of the themoviedb.
 
 #References
+http://stackoverflow.com/questions/23024831/android-shared-preferences-example
+
+https://developer.android.com/training/basics/data-storage/shared-preferences.html
+
+http://stackoverflow.com/questions/3624280/how-to-use-sharedpreferences-in-android-to-store-fetch-and-edit-values
+
 http://www.androidcode.ninja/android-viewholder-pattern-example/
 
 https://gist.github.com/dhiegoabrantes/7933078edf4ccb05f2de2bf3fca17ed0
